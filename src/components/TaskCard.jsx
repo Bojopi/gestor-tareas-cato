@@ -1,48 +1,119 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 function TaskCard({
-    nombre_materia,
-    docente,
-    fecha,
-    estado
+  nombre_materia,
+  docente,
+  fecha,
+  estado
 }) {
-    //uso de useState
-    const [estadoActual, setEstadoActual] = useState(estado)
-    function completarActividad() {
-        setEstadoActual("Completado")
-        //ESTADO: la informacion que puede cambiar mientras el usuario usa la app
-        //este afecta a lo que se muestra en pantalla
+
+  const [estadoActual, setEstadoActual] = useState(estado)
+
+  function iniciarActividad() {
+    setEstadoActual('En progreso')
+  }
+
+  function completarActividad() {
+    setEstadoActual('Completado')
+  }
+
+  function pausarActividad() {
+    setEstadoActual('En pausa')
+  }
+
+  function reabrirActividad() {
+    setEstadoActual('Pendiente')
+  }
+
+  function obtenerClaseEstado() {
+    //PENDIENTE, EN PROGRESO, EN PAUSA, COMPLETADO
+
+    if (estadoActual === 'Pendiente') {
+      return 'bg-yellow-100 text-yellow-800'
     }
 
-    function pasarPendiente() {
-        setEstadoActual("Pendiente")
+    if (estadoActual === 'En progreso') {
+      return 'bg-blue-100 text-blue-800'
     }
-    
-    //ESTABLECER UNA UNICA FUNCION PARA VALIDAR Y CAMBIAR LOS ESTADOS UTILIZANDO:
-    //SWITCH/CASE
-    //Estados a trabajar: Pendiente, En progreso, En pausa y Completado
-    //ESTABLECER LOS USESTATES PARA TODOS LOS PROPS QUE SE RECIBEN
-    //AGREGAR LA INFORMACION DE LA TAREA CON SU DESCRIPCION
-    return(
-        <div className="p-5 m-3 border-2 rounded-lg bg-white">
-            <h3>{nombre_materia}</h3>
-            <p>{docente}</p>
-            <p>Fecha: {fecha}</p>
-            <p>Estado: {estadoActual}</p>
-            {
-                estadoActual != "Completado" && (
-                    <button 
-                    className="rounded-xl bg-green-400 text-white px-3 py-1" 
-                    onClick={completarActividad}>Completar actividad</button>
-                )
-            }
-            {
-                estadoActual == "Completado" && (
-                    <button onClick={pasarPendiente}>Pasar a Pendiente</button>
-                )
-            }
+
+    if (estadoActual === 'En pausa') {
+      return 'bg-gray-100 text-gray-800'
+    }
+
+    return 'bg-green-100 text-green-800'
+  }
+
+  return (
+    <article className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+
+      <div className="flex justify-between items-start gap-4">
+
+        <div>
+
+          <h3 className="text-xl font-bold text-gray-900">
+            {nombre_materia} - {docente}
+          </h3>
+
         </div>
-    )
+
+        <span
+          className={`px-3 py-1 rounded-full text-sm font-medium ${obtenerClaseEstado()}`}
+        >
+          {estadoActual}
+        </span>
+
+      </div>
+
+      <p className="text-gray-500 mt-4">
+        Fecha de entrega: {fecha}
+      </p>
+
+      {estadoActual === 'Pendiente' && (
+        <button
+          onClick={iniciarActividad}
+          className="mt-5 bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition"
+        >
+          Iniciar actividad
+        </button>
+      )}
+
+      {estadoActual === 'En progreso' && (
+        <button
+          onClick={completarActividad}
+          className="mt-5 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+        >
+          Completar actividad
+        </button>
+      )}
+      
+      {estadoActual === 'En pausa' && (
+        <button
+          onClick={completarActividad}
+          className="mt-5 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition"
+        >
+          Completar actividad
+        </button>
+      )}
+
+      {estadoActual === 'Completada' && (
+        <div className="mt-5">
+
+          <p className="text-green-700 font-medium mb-3">
+            ✓ Actividad completada correctamente
+          </p>
+
+          <button
+            onClick={reabrirActividad}
+            className="border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-100 transition"
+          >
+            Reabrir actividad
+          </button>
+
+        </div>
+      )}
+
+    </article>
+  )
 }
 
 export default TaskCard
